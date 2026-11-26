@@ -1,0 +1,32 @@
+{
+  "title": "Sample complexity of distance to multiaccuracy",
+  "upload_type": "software",
+  "publication_date": "2026-11-27",
+  "version": "1.0.0",
+  "creators": [
+    {
+      "name": "DannyExperiments"
+    }
+  ],
+  "keywords": [
+    "distance to multiaccuracy",
+    "sample complexity",
+    "statistical auditing",
+    "anti-Hadamard matrices",
+    "multiaccuracy constraints",
+    "relative Bernstein concentration",
+    "empirical linear programming",
+    "discrete L1 estimation"
+  ],
+  "description": "<p>This note answers the statistical auditing question for distance to exact multiaccuracy posed by Derhake, Devic, Hansen, Liu and Sharan at ITCS 2026. In the catalog's labeled IID model the worst-case sample complexity at fixed small additive error is k^((1/2 + o(1))k), with k the number of groups. The upper bound is independent of the domain size. The lower bound applies even on a known marginal over k + 1 points. The empirical estimator runs in time polynomial in the sample count, groups and arithmetic precision.</p><p>The lower proof adapts the augmented binary matrix of Alon and Vũ. A signed inverse column determines predictor offsets and the magnitudes define the marginal. Perturbing the label probability at one point moves the feasible predictor line along a probability cap, separating the true distances while keeping the labeled distributions close. The upper proof bounds an optimal dual multiplier at a vertex of a pointed hyperplane cell. Relative Bernstein concentration then controls the empirical minimum at a sample count linear in the loss range up to polynomial and logarithmic factors.</p><p>The main result determines the leading exponent and leaves finite polynomial and logarithmic factors between its bounds. For linearly independent membership atoms, a companion proves an exact sum-of-residuals identity, gives a streaming counter estimator and relates the distance to established discrete L1 estimation. The statistics measure weighted distance to exact multiaccuracy, distinct from worst-group bias or multicalibration error.</p><p>The deposit provides the manuscript, LaTeX source, bibliography, citation metadata, an evidence archive and repository checksums. The exact replay checks the paired lower-bound laws, small primal and dual LPs, random-sign likelihood ratios, and all nine positions of the animated score repair. The browser explorer is self-contained. Internal mathematical review is complete. External peer review and formal verification are pending.</p><p>ChatGPT Astra 6.2 (OpenAI) generated the recovered proof, independent-atom supplement and original replay under human direction. OpenAI Codex independently reviewed the mathematics. GPT-6.2 Sol (OpenAI) checked primary sources and prepared the manuscript, extended replay and worked illustration. DannyExperiments is the project citation identity.</p>",
+  "access_right": "open",
+  "license": "other-closed",
+  "notes": "All rights reserved. Publicly downloadable files are supplied without a repository-wide reuse license.",
+  "related_identifiers": [
+    {
+      "identifier": "https://github.com/DannyExperiments/multiaccuracy-distance-sample-complexity/releases/tag/v1.0.0",
+      "relation": "isSupplementTo",
+      "resource_type": "software"
+    }
+  ]
+}

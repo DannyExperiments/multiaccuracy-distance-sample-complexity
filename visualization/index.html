@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Distance to multiaccuracy</title>
+<style>
+:root{color-scheme:dark;--bg:#15172d;--panel:#20263f;--text:#f5f7ff;--muted:#bdc9e6;--old:#b8b4ff;--new:#60ecc1;--mark:#ffc281}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);font:clamp(16px,3.6vw,18px)/1.45 system-ui,sans-serif;color:var(--text)}
+main{max-width:48rem;margin:auto;padding:clamp(.8rem,4vw,2rem)}h1,p{margin:0 0 .65rem}h1{font-size:clamp(1.9rem,7.1vw,3.3rem);line-height:1.04}.intro,details{color:var(--muted)}
+canvas{display:block;width:100%;height:auto;background:var(--panel);border-radius:.85rem;touch-action:pan-y;cursor:grab}canvas:active{cursor:grabbing}
+.controls{display:flex;gap:.45rem .7rem;flex-wrap:wrap;align-items:center;margin:.7rem 0}input{min-width:7rem;flex:1;accent-color:var(--new)}
+.legend{display:flex;flex-wrap:wrap;gap:.3rem .75rem;font-size:.94em;margin:.55rem 0}.original{color:var(--old)}.shifted{color:var(--new)}.fixed{color:var(--mark)}
+table{border-collapse:collapse;width:100%;margin:.5rem 0 .65rem;font-variant-numeric:tabular-nums}th,td{text-align:right;padding:.28rem .34rem;border-bottom:1px solid #4f6083}th:first-child{text-align:left}
+#distance{font-weight:700;font-size:1.12rem}details{border-top:1px solid #4f6083;padding-top:.62rem;margin-top:.72rem}summary{cursor:pointer}
+</style>
+<main>
+<h1>Distance to multiaccuracy</h1>
+<p class="intro">A predictor has three scores. Shift just the last point's label mean to see how much the first two scores must change.</p>
+<label class="controls" for="shift">Label shift <input id="shift" type="range" min="0" max="8" value="8" aria-label="Increase in the last label mean"></label>
+<canvas id="cube" width="700" height="400" role="img" aria-label="Rotating probability cube with original and shifted feasible segments, fixed prediction and nearest repair. Exact values follow."></canvas>
+<p class="legend"><span class="original">━ Original feasible</span><span class="shifted">━ Shifted feasible</span><span class="fixed">◆ Fixed predictor</span></p>
+<label class="controls" for="angle">Rotate cube <input id="angle" type="range" min="10" max="65" value="25" aria-label="Rotation angle in degrees"></label>
+<div id="readout" aria-live="polite">
+<p>Last label mean <strong id="last-mean">7/8</strong></p>
+<table aria-label="Exact score vectors">
+<thead><tr><th scope="col">Predictor</th><th scope="col">g1</th><th scope="col">g2</th><th scope="col">g3</th></tr></thead>
+<tbody>
+<tr class="fixed"><th scope="row">Fixed</th><td>3/4</td><td>1/4</td><td>1</td></tr>
+<tr id="repair" class="shifted"><th scope="row">Nearest</th><td>5/8</td><td>3/8</td><td>1</td></tr>
+</tbody>
+</table>
+<p id="distance">Distance = 1/12</p>
+</div>
+<details><summary>Why the repair moves</summary>
+<p>Points have equal mass. The groups are {1, 2} and {2, 3}. Their two mean-residual constraints leave one line of feasible scores. Raising the third label mean shifts the line. The best repair hits the boundary g3 = 1 and adjusts the other two scores by equal amounts in opposite directions.</p>
+<p>The last label mean changes by t/4 and the distance is t/6. Drag horizontally or use the rotation slider to turn the cube.</p>
+</details>
+</main>
+<script>
+"use strict";
+const vertices=[];
+for (const x of [0,1]) for (const y of [0,1]) for (const z of [0,1]) vertices.push([x,y,z]);
+const canvas=document.getElementById("cube"), ctx=canvas.getContext("2d");
+const angle=document.getElementById("angle"), shift=document.getElementById("shift");
+const repairCells=Array.from(document.querySelectorAll("#repair td"));
+const score=(s,t)=>[.5+s/4,.5-s/4,.75+(t+s)/4];
+function project(point) {
+  const [x,y,z]=point.map(v=>2*v-1), a=Number(angle.value)*Math.PI/180;
+  const u=Math.cos(a),v=Math.sin(a);
+  return [350+145*(u*x-v*y),200+57*(v*x+u*y)-90*z];
+}
+function line(a,b,color,width){
+  ctx.beginPath();ctx.moveTo(...a);ctx.lineTo(...b);ctx.strokeStyle=color;ctx.lineWidth=width;ctx.stroke();
+}
+function render(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  const t=Number(shift.value)/16;
+  for(const [i,a] of vertices.entries()){
+    for(const b of vertices.slice(i+1)){
+      if(a.reduce((sum,x,j)=>sum+Math.abs(x-b[j]),0)===1) line(project(a),project(b),"#4f6083",3);
+    }
+  }
+  ctx.fillStyle="#bdc9e6";ctx.font="bold 32px system-ui";
+  for(const [point,label,offset] of [[[1,0,0],"g1",[12,5]],[[0,1,0],"g2",[-48,9]],[[0,0,1],"g3",[-47,-1]]]){
+    const [x,y]=project(point);ctx.fillText(label,x+offset[0],y+offset[1]);
+  }
+  const old=project(score(1,0)), fixed=project(score(1-t,t));
+  line(project(score(-2,0)),old,"#b8b4ff",8);
+  if(t){
+    line(project(score(-2,t)),fixed,"#60ecc1",8);
+    line(old,fixed,"#ffc281",4);
+    ctx.beginPath();ctx.arc(...fixed,10,0,2*Math.PI);ctx.fillStyle="#60ecc1";ctx.fill();
+  }
+  const [x,y]=old;
+  ctx.beginPath();ctx.moveTo(x,y-14);ctx.lineTo(x+14,y);ctx.lineTo(x,y+14);ctx.lineTo(x-14,y);ctx.closePath();
+  ctx.fillStyle="#ffc281";ctx.fill();
+}
+function gcd(a,b){while(b){[a,b]=[b,a%b];}return a;}
+function fraction(a,b){const g=gcd(a,b);return b===g?String(a/g):a/g+"/"+b/g;}
+function update(){
+  const i=Number(shift.value);
+  document.getElementById("last-mean").textContent=fraction(48+i,64);
+  document.getElementById("distance").textContent="Distance = "+fraction(i,96);
+  repairCells[0].textContent=fraction(48-i,64);
+  repairCells[1].textContent=fraction(16+i,64);
+  render();
+}
+angle.addEventListener("input",render);
+shift.addEventListener("input",update);
+let drag=null;
+canvas.addEventListener("pointerdown",e=>{drag=[e.clientX,Number(angle.value)];canvas.setPointerCapture(e.pointerId);});
+canvas.addEventListener("pointermove",e=>{
+  if(!drag)return;
+  angle.value=String(Math.max(10,Math.min(65,drag[1]+.55*(e.clientX-drag[0]))));render();
+});
+for(const e of ["pointerup","pointercancel","lostpointercapture"])canvas.addEventListener(e,()=>{drag=null;});
+update();
+</script>
+</html>

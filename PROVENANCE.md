@@ -1,0 +1,5 @@
+# Provenance
+
+Derhake, Devic, Hansen, Liu and Sharan pose the statistical auditing question for distance to multiaccuracy at ITCS 2026, §1.2.6. The full version's §4 defines the metric and gives the perfect-information LP. The catalog fixes the labeled-sample and membership-query model. [Proceedings](https://doi.org/10.4230/LIPIcs.ITCS.2026.48) · [Full version](https://arxiv.org/html/2509.16930#S4) · [Pinned Q572](https://github.com/10m-u/open-problems-catalog/blob/ca8d4d44ba3db527f19f28928c240168f545ecfe/problems/computer_science_ai/classical-statistical-machine-learning.md#q572)
+
+The catalog handoff supplied the general proof, an exact replay, and the independent-atom supplement. The release retains the full proofs and extends the exact checks. The lower bound uses the binary inverse-entry theorem and augmented-matrix construction of Alon and Vũ. The companion credits the discrete L1 functional literature and the related random-sign testing argument of Okoroafor. [Literature audit](audits/public_safe_reports/LITERATURE_AUDIT.md) · [Contribution record](AI_DISCLOSURE.md)

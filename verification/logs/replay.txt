@@ -1,0 +1,4 @@
+Lower-bound laws: 1,605 cases over 181 invertible binary matrices.
+Dual optimum and multiplier bound: 345 exact small LPs.
+Independent-atom likelihood ratio: 2,728 exact sign-pair checks.
+All nine illustrated repairs and the crossing-atom sign-flip example passed.

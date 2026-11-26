@@ -1,0 +1,128 @@
+\documentclass[11pt,a4paper]{amsart}
+\usepackage[hmargin=.83in,vmargin=.70in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{amssymb}
+\usepackage[hidelinks]{hyperref}
+\hypersetup{pdftitle={Sample complexity of distance to multiaccuracy}}
+\urlstyle{same}
+\setlength{\emergencystretch}{2em}
+\linespread{0.96}
+\DeclareMathSizes{8}{8}{8}{8}
+\DeclareMathSizes{9}{9}{8}{8}
+\DeclareMathSizes{10.95}{10.95}{8}{8}
+\renewcommand{\bibliofont}{\normalsize\raggedright}
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}[theorem]{Proposition}
+\newcommand{\E}{\mathbb E}
+\newcommand{\dMA}{\operatorname{dMA}}
+\newcommand{\KL}{\operatorname{KL}}
+\title[Distance to multiaccuracy]{Sample complexity of distance to multiaccuracy}
+\date{}
+\begin{document}
+\begin{abstract}
+We study additive estimation of the $L_1$ distance from a fixed predictor to the set of exactly multiaccurate predictors on $k$ groups. For $0<\varepsilon\leq1/64$, the worst-case sample complexity is at least $\Omega(\chi(k)/\varepsilon^2)$ and at most $O((1+k^2\chi(k))k\log(2+k^2\chi(k)/\varepsilon)/\varepsilon^2)$, where $\chi(k)$ is the largest absolute inverse entry of any invertible binary $k\times k$ matrix. At fixed small error this gives $k^{(1/2+o(1))k}$ samples. The empirical estimator is a linear program, polynomial in the sample count, groups and precision. The lower bound holds on a known marginal with $k+1$ points. A companion gives a streaming estimator for independent membership atoms.
+\end{abstract}
+\maketitle
+
+\section{Model and result}
+Let $\mathcal X$ be finite and let $D$ be a law on $\mathcal X\times\{0,1\}$ with full marginal support. Let $f:\mathcal X\to[0,1]$ be given and let $a(x)\in\{0,1\}^k$ be the membership vector of $x$. We observe independent labeled samples from $D$ and may evaluate $f$ and group membership. Write $\eta(x)=\E[Y\mid X=x]$. The target is
+\[
+ \dMA_D(f)=\min_{g:\mathcal X\to[0,1]}\E|f(X)-g(X)|
+       \quad\text{subject to}\quad \E[a(X)(g(X)-Y)]=0.
+\]
+The minimum is attained and $g=\eta$ is feasible. Derhake et al. introduce this distance and pose its statistical and computational auditability question \cite[\S1.2.6]{derhake}. Their full version gives the perfect-information LP and an example relating sensitivity to worst-group bias \cite[\S4]{derhakefull}. We study the number of labeled samples needed to estimate the optimal value.
+
+\begin{theorem}\label{thm:sample}
+For $k\geq1$ and $0<\varepsilon\leq1/64$, let $N^*(k,\varepsilon)$ be the minimax sample complexity for additive error $\varepsilon$ with success probability at least $2/3$. With $\chi(k)=\max_{A\in\{0,1\}^{k\times k},\,\det A\ne0}\max_{i,j}|(A^{-1})_{ij}|$,
+\[
+ \Omega\bigl(\chi(k)/\varepsilon^2\bigr)\ \leq\ N^*(k,\varepsilon)\ \leq\
+ O\left(\frac{(1+k^2\chi(k))k\log(2+k^2\chi(k)/\varepsilon)}{\varepsilon^2}\right).
+\]
+The upper bound has no domain-size term and its estimator uses a linear program of size polynomial in its sample count and $k$. The lower bound holds even given the marginal, on a domain of $k+1$ points. In particular, at fixed such $\varepsilon$, $N^*(k,\varepsilon)=k^{(1/2+o(1))k}$.
+\end{theorem}
+
+Alon and V\~u's Main Theorem \cite[\S2]{alon} bounds their $\chi_1(k)$ between $2^{(k/2)\log_2 k-k(2+o(1))}$ and $2^{(k/2)\log_2 k-k(1+o(1))}$. The bounds apply as $k$ grows through arbitrary orders by their construction in \S2.4. Thus the polynomial and logarithmic factors in Theorem~\ref{thm:sample} preserve the stated leading exponent.
+
+\section{Two labeled laws on the same marginal}
+Take an invertible binary $A$ with an inverse entry of absolute value $\chi(k)$ in column $j$. Following the binary augmented-matrix construction of Alon and V\~u \cite[Proposition~3.4.3]{alon}, use the $k$ by $d$ incidence matrix $B=[A\mid e_j]$, where $d=k+1$ and the last point is $*$. Its kernel is spanned by $q=(-A^{-1}e_j,1)$. Set
+\[
+ H=\|q\|_1\geq1+\chi(k)\geq2,\qquad r_i=\frac{q_i}{4H},\qquad
+ p_i=\frac{|q_i|}{2H}+\frac1{2d},\qquad v_i=\frac{r_i}{p_i}.
+\]
+The marginal $p$ has full support and sums to one. The signed $v_i$ have magnitude at most $1/2$. Let the laws $D_0,D_1$ share $p$ and have fair labels off $*$. At $*$ put $z=v_*>0$ and set their mean labels to $1-z$ and $1-(1-t)z$, respectively, for $t=32\varepsilon\leq1/2$. Fix the same predictor $f=\eta_0+v$ across both laws. It lies in the probability cube, and $B r=0$ makes its distance under $D_0$ zero.
+
+For $D_1$, every feasible predictor has the form $\eta_1+s v$, since its marginal-weighted residual lies in the kernel of $B$. At $*$ the probability cap forces $s\leq1-t$. The distance from $f$ on the remaining points alone is at least $t\sum_{i\ne*}|r_i|=t(H-1)/(4H)\geq4\varepsilon$. This exact value is attained at $s=1-t$, where every coordinate is feasible and the exceptional coordinate coincides with $f_*$. Figure~\ref{fig:example} gives a small instance of this constraint.
+
+\begin{figure}[t]
+\centering
+\begin{tabular}{c|ccc|c}
+ & point 1 & point 2 & point 3 & distance\\ \hline
+ $f$ & $3/4$ & $1/4$ & $1$ & \\
+ $\eta_0$ & $1/2$ & $1/2$ & $3/4$ & $0$\\
+ $\eta_1$ for $t=1/2$ & $1/2$ & $1/2$ & $7/8$ & $1/12$\\
+ nearest repair under $D_1$ & $5/8$ & $3/8$ & $1$ &
+\end{tabular}
+\caption{Take the three membership patterns $(1,0)$, $(1,1)$ and $(0,1)$, and use the uniform marginal. Then $q=(1,-1,1)$ and $v=q/4$. Raising the last mean label by $1/8$ shifts the feasible line until the old predictor lies outside it. The upper bound $g_3\leq1$ forces the repair to move the first two scores by $1/8$ each.}\label{fig:example}
+\end{figure}
+
+Only the Bernoulli probability at $*$ changes. Its probabilities of zero are $z$ and $(1-t)z$. Using KL bounded by chi-square, $z\leq1/2$ and $t\leq1/2$ gives
+\[
+ \KL(D_0\|D_1)\leq p_*\frac{(tz)^2}{(1-t)z(1-(1-t)z)}
+ \leq4p_*t^2z=t^2/H.
+\]
+With $N$ samples the KL is at most $Nt^2/H$. An estimator accurate to $\varepsilon$ would distinguish the laws at threshold $2\varepsilon$ with success at least $2/3$ under each. Its randomized output can only reduce total variation. The sample laws must have total variation at least $1/3$, so Pinsker gives $N\geq2H/(9t^2)$. All side information, including $f$, $B$ and $p$, is the same for the two laws.
+
+\section{Uniform bound on an optimal multiplier}
+The LP dual over the group constraints expresses the distance as
+\[
+       \max_{\lambda\in\mathbb R^k}\E[\phi_\lambda(X,Y)],\qquad
+       \phi_\lambda(x,y)=\min_{0\leq h\leq1}
+       \{\,|f(x)-h|+(\lambda\cdot a(x))(h-y)\,\}.
+\]
+The maximizer exists by LP strong duality. The term in $y$ is constant in the minimization, so the minimizer can depend only on $x$. Writing $c=\lambda\cdot a(x)$, use $h=0$ for $c>1$, $h=f(x)$ for $|c|\leq1$, and $h=1$ for $c<-1$. These formulas agree in value on the boundaries. Thus the objective is affine on each closed cell of the hyperplanes $\lambda\cdot a(x)=\pm1$.
+
+On the support delete dependent group rows, retaining rank $s\leq k$. The constraints are unchanged. If $s=0$, use multiplier zero. Otherwise the reduced patterns span $\mathbb R^s$. Any lineality of a nonempty closed cell is annihilated by all these patterns, so the cell is pointed. In a cell containing an optimum, the optimum set is a nonempty face and has a vertex. One can see the latter by moving along a direction in the optimum face until another independent inequality becomes tight, using pointedness to ensure one of the two movement directions meets a boundary. At a vertex $s$ independent tight patterns yield $C\lambda=b$ for an invertible binary $C$ and $b\in\{-1,1\}^s$. Therefore $\|\lambda\|_\infty\leq s\chi(s)\leq k\chi(k)$, using block-diagonal padding of binary matrices. Insert zeros on omitted coordinates. With $B_0=k\chi(k)$, the box $[-B_0,B_0]^k$ consequently contains a maximizer for any underlying law, including an empirical law with a different support or rank.
+
+\section{From concentration to an empirical LP}
+Put $L_\lambda=1-\phi_\lambda$ and $J=1+k B_0$. Choosing $h=y$ gives $\phi_\lambda\leq1$. On the box, $\phi_\lambda\geq-kB_0$. Thus $0\leq L_\lambda\leq J$. Also $L_0=1$, so the true and empirical minima on this box are both at most one. Each loss is $k$-Lipschitz in $\lambda$ for the infinity norm, since every linear term in the pointwise minimization has slope vector of $\ell_1$ norm at most $k$.
+
+Write $P$ and $P_N$ for population and empirical expectation. With $\mu=PL_\lambda$ the variance is at most $J\mu$. For fixed $\lambda$ and $0<\gamma\leq1$, Bernstein's inequality gives
+\[
+ |(P_N-P)L_\lambda|\leq\gamma\max(1,\mu)
+\]
+except with probability at most $2\exp(-cN\gamma^2/J)$ for an absolute $c>0$. Indeed, the deviation threshold is $\gamma\max(1,\mu)$ and the variance and linear terms in the denominator are $O(J\max(1,\mu))$. Take an infinity-norm net of radius $\gamma/(8k)$ on the box. Its log cardinality is $O(k\log(2+kB_0/\gamma))$. Beyond the net, the deviation changes by at most $\gamma/4$, and the true-mean threshold changes by at most $\gamma^2/8$. Therefore taking $\gamma$ a sufficiently small constant multiple of $\varepsilon$ gives, simultaneously on the box,
+\[
+ |(P_N-P)L_\lambda|\leq \tfrac{\varepsilon}{2}\max(1,PL_\lambda)
+\]
+with probability at least $2/3$, at the stated sample count. An additional $\log(1/\delta)$ term alongside the log cardinality gives failure probability $\delta$.
+
+Writing $m$ for the true minimum loss over the box, the empirical minimum is at most $m+\varepsilon/2$ by testing a true minimizer. It is at least $m-\varepsilon/2$: if $\mu\leq1$, the empirical loss is at least $\mu-\varepsilon/2$, and otherwise it is at least $(1-\varepsilon/2)\mu\geq1-\varepsilon/2$. The estimated distance is one minus the empirical minimum. This relative concentration avoids paying a squared factor $J$.
+
+To compute the empirical value, solve the primal with a score variable $g_i\in[0,1]$ and an absolute-deviation slack per observation. The constraints are $\sum_i a_j(x_i)(g_i-y_i)=0$ for every $j$. Replacing differing score variables at a repeated point by their average preserves every constraint and can only decrease the absolute-deviation objective by convexity. Thus this program equals the empirical distance with a single predictor on the observed domain. It uses $O(N+k)$ variables and constraints and $kN$ membership queries. Rational inputs give polynomial encoding and running time in the sample count, $k$ and precision. Rounding each queried value of $f$ within $\varepsilon/4$ changes either optimum value by at most $\varepsilon/4$. There is no need to compute $\chi(k)$ to solve the LP or enumerate membership patterns. The sample guarantee concerns a sufficient sample size, using known upper bounds on $\chi(k)$ if a budget is needed. This proves Theorem~\ref{thm:sample}.
+
+\section{Independent membership atoms}
+Partition the domain by the membership vector, and discard the all-zero pattern. Suppose the $r$ distinct nonzero patterns are linearly independent over $\mathbb R$. This holds for a laminar family of groups: after dropping duplicates and empty groups, each nonempty difference of a group from the union of its maximal proper children is one atom. Its residual equals the parent's residual minus the children's residuals, so every covered atom is separately constrained. Crossing groups can also qualify; the three two-point groups on three points have incidence determinant of magnitude two.
+
+\begin{proposition}\label{prop:atoms}
+Writing $e_j=\E[(Y-f(X))\mathbf 1_{X\in A_j}]$ for the covered atoms, the distance is $\sum_j|e_j|$. Its empirical residual counters give a one-pass estimator with error at most $\sqrt{r/N}+\sqrt{2\log(1/\delta)/N}$ with probability at least $1-\delta$. For $r\geq1$ and $0<\varepsilon\leq1/16$, some independent-atom problems require $\Omega(\sqrt r/\varepsilon^2)$ samples.
+\end{proposition}
+
+Let $u_j(g)=\E[(g(X)-Y)\mathbf 1_{X\in A_j}]$. Independence means multiaccuracy is equivalent to $u_j(g)=0$ on each covered atom. The cost on an atom is at least $|e_j|$ by the triangle inequality. If $e_j>0$, replace $f$ there by $f+t(1-f)$ with $t=e_j/\E[(1-f(X))\mathbf 1_{X\in A_j}]\in(0,1]$. The bound on $t$ follows from $Y\leq1$. If $e_j<0$, use $(1-t)f$ with $t=-e_j/\E[f(X)\mathbf 1_{X\in A_j}]\in(0,1]$. Else leave it unchanged. These repairs make the constraints hold with cost exactly $\sum_j|e_j|$. An uncovered atom needs no change.
+
+For estimation, add each residual $Y_i-f(X_i)$ to the counter keyed by its covered atom. Divide the sum of absolute counter values by $N$. The one-observation vector is supported on at most one coordinate and has norm at most one. The sum of its coordinate variances is at most one, giving expected absolute estimation error at most $\sqrt{r/N}$ by Cauchy--Schwarz. Replacing one observation can change this absolute error by at most $2/N$. Bounded differences yields the asserted tail. Only observed atom keys and one signed counter per atom are needed, with $k$ membership queries per observation. Rounding the input scores by a uniform tolerance changes the estimate by at most that tolerance.
+
+For the lower bound take $r$ equal-mass singleton groups and $f=1/2$. The null has fair labels. In each alternative choose independent fair signs $s_j$ once, and use mean $1/2+a s_j$ on atom $j$, with $0<a\leq1/4$. Every such alternative has distance $a$. The one-sample inner product between the likelihood ratios of two independent sign choices $s,t$ under the null is $1+(4a^2/r)\sum_j s_jt_j$. For $N$ samples, raising this expression to the $N$th power and averaging bounds one plus the mixture's chi-square divergence by
+\[
+ \E_{s,t}\exp\bigl[(4Na^2/r)\textstyle\sum_j s_jt_j\bigr]
+    =\cosh(4Na^2/r)^r\leq\exp(8N^2a^4/r).
+\]
+If $N$ is a sufficiently small constant multiple of $\sqrt r/a^2$, the total variation from the null is less than $1/3$. Taking $a=4\varepsilon$ gives the claim. An analogous random-sign argument appears for a multicalibration residual metric in \cite[\S5.4]{okoroafor}.
+
+The counter estimator is a simple streaming guarantee. There is also a connection to discrete $L_1$ estimation \cite{jiao}. With residual $Y-f(X)$, or zero on the uncovered atom, randomly produce a sign with this conditional mean. For the resulting atom/sign distribution $R$ and its sign flip $R'$, one has $\dMA_D(f)=\|R-R'\|_1/2$. Independent data splits supply the two samples. Conversely, a mixture taking equal-probability draws from $P$ and known uniform $U$ and labeling by the source, with $f=1/2$ and singleton groups, gives $\dMA_D(f)=\|P-U\|_1/4$. Thus known discrete-functional results are relevant in their respective regimes. The elementary bounds here make no claim to restricted minimax optimality or to matching the general bound beyond its leading exponent.
+
+\section*{AI assistance}
+ChatGPT Astra 6.2 (OpenAI) generated the recovered proof, independent-atom supplement and original replay under human direction. OpenAI Codex independently reviewed the mathematics. GPT-6.2 Sol (OpenAI) checked primary sources and prepared this manuscript, the extended replay and illustration. DannyExperiments is the project citation identity.
+
+\bibliographystyle{amsplain}
+\bibliography{references}
+\end{document}
