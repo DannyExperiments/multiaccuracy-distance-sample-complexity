@@ -1,6 +1,6 @@
 # Sample complexity of distance to multiaccuracy
 
-[![Repository verification](https://github.com/DannyExperiments/multiaccuracy-distance-sample-complexity/actions/workflows/verify.yml/badge.svg?branch=main)](https://github.com/DannyExperiments/multiaccuracy-distance-sample-complexity/actions/workflows/verify.yml) [![Replay verification](https://github.com/DannyExperiments/multiaccuracy-distance-sample-complexity/actions/workflows/replay.yml/badge.svg?branch=main)](https://github.com/DannyExperiments/multiaccuracy-distance-sample-complexity/actions/workflows/replay.yml) [![PDF build](https://github.com/DannyExperiments/multiaccuracy-distance-sample-complexity/actions/workflows/pdf.yml/badge.svg?branch=main)](https://github.com/DannyExperiments/multiaccuracy-distance-sample-complexity/actions/workflows/pdf.yml)
+[![Repository verification](https://github.com/DannyExperiments/multiaccuracy-distance-sample-complexity/actions/workflows/verify.yml/badge.svg?branch=main)](https://github.com/DannyExperiments/multiaccuracy-distance-sample-complexity/actions/workflows/verify.yml) [![Replay verification](https://github.com/DannyExperiments/multiaccuracy-distance-sample-complexity/actions/workflows/replay.yml/badge.svg?branch=main)](https://github.com/DannyExperiments/multiaccuracy-distance-sample-complexity/actions/workflows/replay.yml) [![PDF build](https://github.com/DannyExperiments/multiaccuracy-distance-sample-complexity/actions/workflows/pdf.yml/badge.svg?branch=main)](https://github.com/DannyExperiments/multiaccuracy-distance-sample-complexity/actions/workflows/pdf.yml) [![Partial Lean verification](https://github.com/DannyExperiments/multiaccuracy-distance-sample-complexity/actions/workflows/lean.yml/badge.svg?branch=main)](https://github.com/DannyExperiments/multiaccuracy-distance-sample-complexity/actions/workflows/lean.yml)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.24572314.svg)](https://doi.org/10.5281/zenodo.24572314)
 
 Estimating the L1 distance to exact multiaccuracy on k groups takes k^((1/2 + o(1))k) labeled samples in the worst case at fixed small additive error. The upper bound is independent of the domain size and uses a linear program polynomial in the sample count. The lower bound holds on k + 1 points even when the marginal is known.
@@ -22,3 +22,7 @@ This result answers Derhake et al.'s statistical auditing question for distance 
 [Mathematical audit](audits/public_safe_reports/MATHEMATICAL_AUDIT.md) · [Literature audit](audits/public_safe_reports/LITERATURE_AUDIT.md) · [Scope](CLAIM_SCOPE_AND_LIMITATIONS.md) · [AI disclosure](AI_DISCLOSURE.md) · [Status](STATUS.md)
 
 [Release v1.0.0](https://github.com/DannyExperiments/multiaccuracy-distance-sample-complexity/releases/tag/v1.0.0) · [Version DOI](https://doi.org/10.5281/zenodo.24572314) · [Citation](CITATION.cff)
+
+## Partial Lean verification
+
+Over the rational unit cube for the three-atom example, the two group constraints force mean absolute repair distance at least 1/12. The repair (5/8, 3/8, 1) attains that bound. [Scope, source and replay](formalization/README.md)
